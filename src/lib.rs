@@ -33,6 +33,7 @@ impl Renderable<Model> for Model {
     fn view(&self) -> Html<Self> {
         html! {
             <div>
+                <h1>{ "はろ～" }</h1>
                 <button onclick=|_| Msg::Click,>{ "くりっく！" }</button>
             </div>
         }

@@ -19,7 +19,7 @@ module.exports = {
             options: {
               flags: '',
               bin: false,
-              release: true,
+              release: false,
               verbose: true,
               features: ""
             }
