@@ -20,7 +20,7 @@ module.exports = {
               flags: '',
               bin: false,
               release: true,
-              verbose: false,
+              verbose: true,
               features: ""
             }
           }
@@ -28,14 +28,15 @@ module.exports = {
       },
       {
         test: /\.wasm$/,
-        loader: 'file-loader',
-        options: {
-          name: 'static/wasm/[name].[hash:8].[ext]'
-        }
+        type: 'javascript/auto',
+        loader: 'file-loader'
       }
     ]
   },
   plugins: [
     new HtmlWebpackPlugin()
-  ]
+  ],
+  node: {
+    fs: "empty"
+  }
 };

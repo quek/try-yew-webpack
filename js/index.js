@@ -1,4 +1,4 @@
-const r = require('../Cargo.toml');
+import('../Cargo.toml').then(() => {});
 
 function component() {
   let element = document.createElement('div');
