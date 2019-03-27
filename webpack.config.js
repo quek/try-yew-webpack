@@ -13,6 +13,14 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /target\/wasm32-unknown-unknown\/(debug|release)\/minimal\.js$/,
+        loader: 'string-replace-loader',
+        options: {
+          search: 'fetch( "minimal.wasm"',
+          replace: 'fetch( require("./minimal.wasm")',
+        }
+      },
+      {
         test: /\.wasm$/,
         type: 'javascript/auto',
         loader: 'file-loader'
