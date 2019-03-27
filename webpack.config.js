@@ -24,6 +24,10 @@ module.exports = {
         test: /\.wasm$/,
         type: 'javascript/auto',
         loader: 'file-loader'
+      },
+      {
+        test: /\.(png|jpg|gif|eot|woff|ttf|svg|ico)$/,
+        loader: 'file-loader'
       }
     ]
   },

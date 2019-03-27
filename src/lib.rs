@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate stdweb;
+
 use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
 use yew::services::ConsoleService;
 
@@ -35,8 +38,13 @@ impl Renderable<Model> for Model {
             <div>
                 <h1>{ "はろ～ですよ" }</h1>
                 <button onclick=|_| Msg::Click,>{ "くりっく！" }</button>
+                <hr />
+                <img src={assets("1.png")}, />
             </div>
         }
     }
 }
 
+fn assets(name: &'static str) -> std::string::String {
+    (js! { return window.assets(@{name}); }).into_string().unwrap()
+}
