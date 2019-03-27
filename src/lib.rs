@@ -1,5 +1,6 @@
 #[macro_use]
 extern crate stdweb;
+extern crate yew;
 
 use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
 use yew::services::ConsoleService;
