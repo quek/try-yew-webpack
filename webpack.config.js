@@ -9,23 +9,9 @@ module.exports = {
     filename: '[name]-[hash].js',
     path: path.resolve(__dirname, 'dist')
   },
+  devtool: 'cheap-source-map',
   module: {
     rules: [
-      {
-        test: /Cargo.toml$/,
-        loaders: [
-          {
-            loader: "cargo-web-loader",
-            options: {
-              flags: '',
-              bin: false,
-              release: false,
-              verbose: true,
-              features: ""
-            }
-          }
-        ]
-      },
       {
         test: /\.wasm$/,
         type: 'javascript/auto',

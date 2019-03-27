@@ -22,7 +22,7 @@ impl Component for Model {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::Click => {
-                self.console.log("にゃん");
+                self.console.log("にゃん♪");
             }
         }
         true
@@ -33,7 +33,7 @@ impl Renderable<Model> for Model {
     fn view(&self) -> Html<Self> {
         html! {
             <div>
-                <h1>{ "はろ～" }</h1>
+                <h1>{ "はろ～ですよ" }</h1>
                 <button onclick=|_| Msg::Click,>{ "くりっく！" }</button>
             </div>
         }
