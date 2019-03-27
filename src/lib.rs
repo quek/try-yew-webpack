@@ -5,6 +5,9 @@ extern crate yew;
 use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
 use yew::services::ConsoleService;
 
+pub mod assets;
+use assets::path;
+
 pub struct Model {
     console: ConsoleService,
 }
@@ -40,12 +43,8 @@ impl Renderable<Model> for Model {
                 <h1>{ "はろ～ですよ" }</h1>
                 <button onclick=|_| Msg::Click,>{ "くりっく！" }</button>
                 <hr />
-                <img src={assets("1.png")}, />
+                <img src={path("1.png")}, style="height: 200px", />
             </div>
         }
     }
-}
-
-fn assets(name: &'static str) -> std::string::String {
-    (js! { return window.assets(@{name}); }).into_string().unwrap()
 }
