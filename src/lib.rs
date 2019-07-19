@@ -2,11 +2,13 @@
 extern crate stdweb;
 extern crate yew;
 
-use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
 use yew::services::ConsoleService;
+use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
 
 pub mod assets;
 use assets::path;
+
+pub mod component;
 
 pub struct Model {
     console: ConsoleService,
@@ -40,6 +42,7 @@ impl Renderable<Model> for Model {
     fn view(&self) -> Html<Self> {
         html! {
             <div>
+                <component::tasks::Model: />
                 <h1>{ "はろ～ですよ" }</h1>
                 <button onclick=|_| Msg::Click,>{ "くりっく！" }</button>
                 <hr />
