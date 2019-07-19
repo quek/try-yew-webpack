@@ -6,3 +6,5 @@
 /node_modules
 /target
 /yarn-error.log
+.vs/VSWorkspaceState.json
+.vs/slnx.sqlite
