@@ -34,7 +34,10 @@ module.exports = {
     ]
   },
   plugins: [
-    new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin({
+      title: 'CoC',
+      template: 'src/index.html'
+    }),
     new webpack.HotModuleReplacementPlugin()
   ],
   node: {
