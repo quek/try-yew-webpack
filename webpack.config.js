@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   entry: {
@@ -7,7 +8,8 @@ module.exports = {
   },
   output: {
     filename: '[name]-[hash].js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '/'
   },
   devtool: 'cheap-source-map',
   module: {
@@ -32,9 +34,22 @@ module.exports = {
     ]
   },
   plugins: [
-    new HtmlWebpackPlugin()
+    new HtmlWebpackPlugin(),
+    new webpack.HotModuleReplacementPlugin()
   ],
   node: {
     fs: "empty"
+  },
+  devServer: {
+    contentBase: path.join(__dirname, 'public'),
+    proxy: {
+      '/__': 'http://localhost:5000',
+    },
+    historyApiFallback: {
+      rewrites: [
+        { from: /./, to: '/' }
+      ]
+    },
+    hot: true
   }
 };

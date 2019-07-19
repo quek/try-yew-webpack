@@ -1,5 +1,8 @@
 *~
+/.firebase
+/.firebaserc
 /Cargo.lock
+/firebase-debug.log
 /node_modules
 /target
 /yarn-error.log
