@@ -15,7 +15,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /target\/wasm32-unknown-unknown\/(debug|release)\/minimal\.js$/,
+        test: /.*minimal\.js$/,
         loader: 'string-replace-loader',
         options: {
           search: 'fetch( "minimal.wasm"',
