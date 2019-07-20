@@ -68,7 +68,20 @@ impl Renderable<Model> for Model {
         html! {
             <div>
                 <h1>{ "ねこねこ " }</h1>
+                <ul>
+            { for self.tasks.iter().map(|task| self.view_task(task)) }
+                </ul>
             </div>
+        }
+    }
+}
+
+impl Model {
+    fn view_task(&self, task: &Task) -> Html<Model> {
+        html! {
+            <li>
+            {&task.name}
+            </li>
         }
     }
 }
