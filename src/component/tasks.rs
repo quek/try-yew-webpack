@@ -12,6 +12,7 @@ pub struct Model {
 
 pub enum Msg {
     GetTasks(QuerySnapshot),
+    AddTask
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -54,6 +55,9 @@ impl Component for Model {
                 self.tasks = tasks;
                 console!(log, &self.tasks);
             }
+            Msg::AddTask => {
+                console!(log, "add task");
+            }
         }
         true
     }
@@ -66,6 +70,9 @@ impl Renderable<Model> for Model {
                 <ul>
                     { for self.tasks.iter().map(|task| self.view_task(task)) }
                 </ul>
+                <button class="add-button", onclick=|_| Msg::AddTask, >
+                  {"+"}
+                </button>
             </div>
         }
     }
