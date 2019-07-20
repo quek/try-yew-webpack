@@ -7,7 +7,7 @@ use yew::services::ConsoleService;
 use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
 
 pub mod assets;
-use assets::path;
+// use assets::path;
 
 pub mod component;
 pub mod firebase;
@@ -43,12 +43,14 @@ impl Component for Model {
 impl Renderable<Model> for Model {
     fn view(&self) -> Html<Self> {
         html! {
-            <div>
+            <div class="body", >
                 <component::tasks::Model: />
+                /*
                 <h1>{ "はろ～ですよ" }</h1>
                 <button onclick=|_| Msg::Click,>{ "くりっく！" }</button>
                 <hr />
                 <img src={path("1.png")}, style="height: 200px", />
+                */
             </div>
         }
     }

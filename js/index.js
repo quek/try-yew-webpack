@@ -3,7 +3,9 @@
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
-import('./assets.js');
+import './assets.js';
+import '../css/main.scss';
+
 
 window.firebase = firebase;
 

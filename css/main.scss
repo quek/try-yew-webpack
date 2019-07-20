@@ -1,0 +1,54 @@
+html {
+    font-size: 10px;
+}
+  
+  body, button, input, select, textarea {
+    font-size: 3rem;
+  }
+  
+  body {
+    color: #ddd;
+    background-color: black;
+  }
+  
+  a {
+    color: blue;
+  }
+  
+  .yarn img {
+    display: none;
+    height: 100px;
+    width: 100px;
+  }
+  
+  .body {
+    margin: 0.5rem;
+  }
+  
+  .tasks {
+    ul {
+      list-style-type: none;
+      margin-block-start: 0;
+      margin-block-end: 0;
+      margin-inline-start: 0;
+      margin-inline-end: 0;
+      padding-inline-start: 0;
+    }
+  
+    li {
+      cursor: pointer;
+      padding: 0 0.2rem;
+    }
+  }
+  .add-button {
+    padding: 0 4rem;
+    position: fixed;
+    bottom: 1.5rem;
+  }
+  
+  .TaskNew {
+    input {
+      width: 100%;
+    }
+  }
+  

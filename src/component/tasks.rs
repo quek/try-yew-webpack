@@ -44,19 +44,15 @@ impl Component for Model {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::GetTasks(qs) => {
-                let size = qs.size();
                 let docs = qs.docs();
                 let tasks = docs
                     .iter()
                     .map(|doc| {
-                        let task: Task = doc.data().try_into().unwrap();
-                        task
+                        doc.data().try_into().unwrap()
                     })
                     .collect();
                 self.tasks = tasks;
                 console!(log, &self.tasks);
-
-                console!(log, size);
             }
         }
         true
@@ -66,10 +62,9 @@ impl Component for Model {
 impl Renderable<Model> for Model {
     fn view(&self) -> Html<Self> {
         html! {
-            <div>
-                <h1>{ "ねこねこ " }</h1>
+            <div class="tasks", >
                 <ul>
-            { for self.tasks.iter().map(|task| self.view_task(task)) }
+                    { for self.tasks.iter().map(|task| self.view_task(task)) }
                 </ul>
             </div>
         }
@@ -80,7 +75,7 @@ impl Model {
     fn view_task(&self, task: &Task) -> Html<Model> {
         html! {
             <li>
-            {&task.name}
+                {&task.name}
             </li>
         }
     }

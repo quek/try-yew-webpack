@@ -30,8 +30,19 @@ module.exports = {
       {
         test: /\.(png|jpg|gif|eot|woff|ttf|svg|ico)$/,
         loader: 'file-loader'
+      },
+      {
+        test: /\.s?css$/,
+        use: [
+          "style-loader",       // creates style nodes from JS strings
+          "css-loader",         // translates CSS into CommonJS
+          "sass-loader" // compiles Sass to CSS, using Node Sass by default
+        ]
       }
     ]
+  },
+  resolve: {
+    extensions: [ '.js', '.sass', '.scss', 'css', '.rs', '.png' ],
   },
   plugins: [
     new HtmlWebpackPlugin({
