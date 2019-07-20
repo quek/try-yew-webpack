@@ -10,9 +10,9 @@ pub fn current_user() -> User {
 }
 
 impl User {
-    pub fn uid(self) -> String {
+    pub fn uid(&self) -> String {
         let uid = js! {
-            return @{self.0}.uid
+            return @{&self.0}.uid
         };
         uid.into_string().unwrap()
     }
