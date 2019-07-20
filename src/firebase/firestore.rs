@@ -1,9 +1,12 @@
+use stdweb::unstable::TryInto;
 use stdweb::Value;
+use yew::Callback;
 
 pub struct Firestore(Value);
 pub struct Collection(Value);
 pub struct Document(Value);
 pub struct QuerySnapshot(Value);
+pub struct QueryDocumentSnapshot(Value);
 
 impl Firestore {
     pub fn new() -> Self {
@@ -33,11 +36,17 @@ impl Collection {
         Document::new(x)
     }
 
-    pub fn get(&self) -> QuerySnapshot {
-        let x = js! {
-            return @{&self.0}.get();
+    pub fn get(&self, callback: Callback<QuerySnapshot>) {
+        let cb = move |value: Value| {
+            callback.emit(QuerySnapshot::new(value));
         };
-        QuerySnapshot::new(x)
+        js! {
+            const callback = @{cb};
+            return @{&self.0}.get().then(x => {
+                callback(x);
+                callback.drop();
+            });
+        };
     }
 }
 
@@ -57,5 +66,33 @@ impl Document {
 impl QuerySnapshot {
     pub fn new(value: Value) -> Self {
         Self(value)
+    }
+
+    pub fn size(&self) -> u32 {
+        js!(
+            return @{&self.0}.size;
+        )
+        .try_into()
+        .unwrap()
+    }
+
+    pub fn docs(&self) -> Vec<QueryDocumentSnapshot> {
+        let x = js! {
+            return @{&self.0}.docs;
+        };
+        let v: Vec<Value> = x.try_into().unwrap();
+        v.iter()
+            .map(|x| QueryDocumentSnapshot::new(x.clone()))
+            .collect()
+    }
+}
+
+impl QueryDocumentSnapshot {
+    pub fn new(value: Value) -> Self {
+        Self(value)
+    }
+
+    pub fn data(&self) -> Value {
+        js!( return @{&self.0}.data() )
     }
 }
