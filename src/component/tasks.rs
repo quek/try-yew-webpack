@@ -1,4 +1,5 @@
 use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
+use firebase::auth::current_user;
 
 pub struct Model {
     value: i32,
@@ -9,6 +10,8 @@ impl Component for Model {
     type Properties = ();
 
     fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
+        let user = current_user();
+        console!(log, user.uid());
         Model { value: 0 }
     }
 

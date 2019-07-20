@@ -9,6 +9,7 @@ pub mod assets;
 use assets::path;
 
 pub mod component;
+pub mod firebase;
 
 pub struct Model {
     console: ConsoleService,

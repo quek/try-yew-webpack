@@ -5,6 +5,7 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import('./assets.js');
 
+window.firebase = firebase;
 
 fetch('/__/firebase/init.json')
   .then(response => {
