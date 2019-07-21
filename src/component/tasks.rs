@@ -12,7 +12,7 @@ pub struct Model {
 
 pub enum Msg {
     GetTasks(QuerySnapshot),
-    AddTask
+    AddTask,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -48,9 +48,7 @@ impl Component for Model {
                 let docs = qs.docs();
                 let tasks = docs
                     .iter()
-                    .map(|doc| {
-                        doc.data().try_into().unwrap()
-                    })
+                    .map(|doc| doc.data().try_into().unwrap())
                     .collect();
                 self.tasks = tasks;
                 console!(log, &self.tasks);
@@ -60,6 +58,10 @@ impl Component for Model {
             }
         }
         true
+    }
+
+    fn change(&mut self, _: Self::Properties) -> ShouldRender {
+        false
     }
 }
 
