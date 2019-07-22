@@ -1,4 +1,5 @@
 use super::path::Path;
+use super::route::Route;
 use super::route_service::RouteService;
 use log::info;
 use serde::Deserialize;
@@ -14,7 +15,7 @@ impl Transferable for Path {}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum Request {
-    ChangeRoute(Path),
+    ChangeRoute(Route),
     ChangeRouteNoBroadcast(Path),
     GetCurrentRoute,
 }
@@ -53,7 +54,7 @@ impl Agent for Router {
         match msg {
             Msg::BrowserNavigationRouteChanged(_route_string) => {
                 info!("Browser navigated");
-                let route = Path::current_route(&self.route_service);
+                let route = Path::current(&self.route_service);
                 for sub in self.subscribers.iter() {
                     self.link.response(*sub, route.clone());
                 }
@@ -65,12 +66,12 @@ impl Agent for Router {
         info!("Request: {:?}", msg);
         match msg {
             Request::ChangeRoute(route) => {
-                console!(log, format!("ChangeRoute {:?}", &route));
-                let route_string: String = route.to_route_string();
+                let path = route.to_path();
+                console!(log, format!("ChangeRoute {:?}", &path));
+                let route_string: String = path.to_route_string();
                 self.route_service.push_state(&route_string);
-                let route = Path::current_route(&self.route_service);
                 for sub in self.subscribers.iter() {
-                    self.link.response(*sub, route.clone());
+                    self.link.response(*sub, path.clone());
                 }
             }
             Request::ChangeRouteNoBroadcast(route) => {
@@ -78,9 +79,9 @@ impl Agent for Router {
                 self.route_service.push_state(&route_string);
             }
             Request::GetCurrentRoute => {
-                let route = Path::current_route(&self.route_service);
-                console!(log, format!("GetCurrentRoute {:?}", &route));
-                self.link.response(who, route.clone());
+                let path = Path::current(&self.route_service);
+                console!(log, format!("GetCurrentRoute {:?}", &path));
+                self.link.response(who, path.clone());
             }
         }
     }

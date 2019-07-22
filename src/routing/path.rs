@@ -22,7 +22,7 @@ impl Path {
         path
     }
 
-    pub fn current_route(route_service: &RouteService) -> Self {
+    pub fn current(route_service: &RouteService) -> Self {
         let path = route_service.get_path();
         let mut path_segments: Vec<String> = path.split("/").map(String::from).collect();
         path_segments.remove(0);

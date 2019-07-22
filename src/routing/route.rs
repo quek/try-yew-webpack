@@ -1,5 +1,7 @@
 use super::path::Path;
+use serde::{Deserialize, Serialize};
 
+#[derive(Serialize, Deserialize, Debug)]
 pub enum Route {
     Tasks,
     TaskNew,

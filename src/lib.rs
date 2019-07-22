@@ -46,16 +46,6 @@ impl Component for Model {
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::NavigateTo(route) => {
-                let path_segments = match route {
-                    Route::Tasks => vec!["tasks".into()],
-                    Route::TaskNew => vec!["tasks".into(), "new".into()],
-                    Route::PathNotFound(_) => vec!["path_not_fount".into()],
-                };
-                let route = Path {
-                    path_segments,
-                    query: None,
-                    fragment: None,
-                };
                 self.router.send(routing::router::Request::ChangeRoute(route));
                 false
             }
