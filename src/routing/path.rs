@@ -1,22 +1,15 @@
 use super::route_service::RouteService;
 use serde::Deserialize;
 use serde::Serialize;
-use stdweb::unstable::TryFrom;
-use stdweb::JsSerialize;
-use stdweb::Value;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Path<T> {
+pub struct Path {
     pub path_segments: Vec<String>,
     pub query: Option<String>,
     pub fragment: Option<String>,
-    pub state: T,
 }
 
-impl<T> Path<T>
-where
-    T: JsSerialize + Clone + TryFrom<Value> + Default + 'static,
-{
+impl Path {
     pub fn to_route_string(&self) -> String {
         let path = self.path_segments.join("/");
         let mut path = format!("/{}", path);
@@ -29,7 +22,7 @@ where
         path
     }
 
-    pub fn current_route(route_service: &RouteService<T>) -> Self {
+    pub fn current_route(route_service: &RouteService) -> Self {
         let path = route_service.get_path();
         let mut path_segments: Vec<String> = path.split("/").map(String::from).collect();
         path_segments.remove(0);
@@ -54,7 +47,6 @@ where
             path_segments,
             query,
             fragment,
-            state: T::default(),
         }
     }
 }

@@ -4,65 +4,38 @@ use log::info;
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::HashSet;
-use std::fmt::Debug;
-use stdweb::unstable::TryFrom;
-use stdweb::JsSerialize;
-use stdweb::Value;
 use yew::worker::*;
 
-pub enum Msg<T>
-where
-    T: JsSerialize + Clone + Debug + TryFrom<Value> + 'static,
-{
-    BrowserNavigationRouteChanged((String, T)),
+pub enum Msg {
+    BrowserNavigationRouteChanged(String),
 }
 
-impl<T> Transferable for Path<T> where for<'de> T: Serialize + Deserialize<'de> {}
+impl Transferable for Path {}
 
 #[derive(Serialize, Deserialize, Debug)]
-pub enum Request<T> {
-    ChangeRoute(Path<T>),
-    ChangeRouteNoBroadcast(Path<T>),
+pub enum Request {
+    ChangeRoute(Path),
+    ChangeRouteNoBroadcast(Path),
     GetCurrentRoute,
 }
 
-impl<T> Transferable for Request<T> where for<'de> T: Serialize + Deserialize<'de> {}
+impl Transferable for Request {}
 
-pub struct Router<T>
-where
-    for<'de> T: JsSerialize
-        + Clone
-        + Debug
-        + TryFrom<Value>
-        + Default
-        + Serialize
-        + Deserialize<'de>
-        + 'static,
-{
-    link: AgentLink<Router<T>>,
-    route_service: RouteService<T>,
+pub struct Router {
+    link: AgentLink<Router>,
+    route_service: RouteService,
     subscribers: HashSet<HandlerId>,
 }
 
-impl<T> Agent for Router<T>
-where
-    for<'de> T: JsSerialize
-        + Clone
-        + Debug
-        + TryFrom<Value>
-        + Default
-        + Serialize
-        + Deserialize<'de>
-        + 'static,
-{
+impl Agent for Router {
     type Reach = Context;
-    type Message = Msg<T>;
-    type Input = Request<T>;
-    type Output = Path<T>;
+    type Message = Msg;
+    type Input = Request;
+    type Output = Path;
 
     fn create(link: AgentLink<Self>) -> Self {
         console!(log, "Router create");
-        let callback = link.send_back(|route_changed: (String, T)| {
+        let callback = link.send_back(|route_changed: String| {
             Msg::BrowserNavigationRouteChanged(route_changed)
         });
         let mut route_service = RouteService::new();
@@ -78,10 +51,9 @@ where
     fn update(&mut self, msg: Self::Message) {
         console!(log, format!("Router update {:?}", 111));
         match msg {
-            Msg::BrowserNavigationRouteChanged((_route_string, state)) => {
+            Msg::BrowserNavigationRouteChanged(_route_string) => {
                 info!("Browser navigated");
-                let mut route = Path::current_route(&self.route_service);
-                route.state = state;
+                let route = Path::current_route(&self.route_service);
                 for sub in self.subscribers.iter() {
                     self.link.response(*sub, route.clone());
                 }
@@ -95,7 +67,7 @@ where
             Request::ChangeRoute(route) => {
                 console!(log, format!("ChangeRoute {:?}", &route));
                 let route_string: String = route.to_route_string();
-                self.route_service.push_state(&route_string, route.state);
+                self.route_service.push_state(&route_string);
                 let route = Path::current_route(&self.route_service);
                 for sub in self.subscribers.iter() {
                     self.link.response(*sub, route.clone());
@@ -103,7 +75,7 @@ where
             }
             Request::ChangeRouteNoBroadcast(route) => {
                 let route_string: String = route.to_route_string();
-                self.route_service.push_state(&route_string, route.state);
+                self.route_service.push_state(&route_string);
             }
             Request::GetCurrentRoute => {
                 let route = Path::current_route(&self.route_service);

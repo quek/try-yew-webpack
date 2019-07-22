@@ -20,13 +20,13 @@ use routing::route::Route;
 
 pub struct Model {
     route: Route,
-    router: Box<Bridge<routing::router::Router<()>>>,
+    router: Box<Bridge<routing::router::Router>>,
 }
 
 pub enum Msg {
     Click,
     NavigateTo(Route),
-    HandleRoute(Path<()>),
+    HandleRoute(Path),
 }
 
 impl Component for Model {
@@ -34,7 +34,7 @@ impl Component for Model {
     type Properties = ();
 
     fn create(_: Self::Properties, mut link: ComponentLink<Self>) -> Self {
-        let callback = link.send_back(|path: Path<()>| Msg::HandleRoute(path));
+        let callback = link.send_back(|path: Path| Msg::HandleRoute(path));
         let mut router = routing::router::Router::bridge(callback);
         router.send(routing::router::Request::GetCurrentRoute);
         Model {
@@ -55,7 +55,6 @@ impl Component for Model {
                     path_segments,
                     query: None,
                     fragment: None,
-                    state: (),
                 };
                 self.router.send(routing::router::Request::ChangeRoute(route));
                 false
