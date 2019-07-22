@@ -13,10 +13,11 @@ use assets::asset;
 
 pub mod component;
 pub mod firebase;
+pub mod route;
 pub mod route_service;
 pub mod router;
 
-use router::Route;
+use route::Route;
 
 pub enum Child {
     Tasks,
@@ -57,7 +58,7 @@ impl Component for Model {
                     Child::TaskNew => vec!["tasks".into(), "new".into()],
                     Child::PathNotFound(_) => vec!["path_not_fount".into()],
                 };
-                let route = router::Route {
+                let route = Route {
                     path_segments,
                     query: None,
                     fragment: None,

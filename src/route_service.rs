@@ -46,7 +46,7 @@ where
         }));
     }
 
-    pub fn set_route(&mut self, route: &str, state: T) {
+    pub fn push_state(&mut self, route: &str, state: T) {
         self.history.push_state(state, "", Some(route));
     }
 
