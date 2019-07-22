@@ -16,23 +16,19 @@ pub mod firebase;
 pub mod route;
 pub mod route_service;
 pub mod router;
+pub mod routes;
 
 use route::Route;
-
-pub enum Child {
-    Tasks,
-    TaskNew,
-    PathNotFound(String),
-}
+use routes::Routes;
 
 pub struct Model {
-    child: Child,
+    route: Routes,
     router: Box<Bridge<router::Router<()>>>,
 }
 
 pub enum Msg {
     Click,
-    NavigateTo(Child),
+    NavigateTo(Routes),
     HandleRoute(Route<()>),
 }
 
@@ -45,18 +41,18 @@ impl Component for Model {
         let mut router = router::Router::bridge(callback);
         router.send(router::Request::GetCurrentRoute);
         Model {
-            child: Child::Tasks,
+            route: Routes::Tasks,
             router,
         }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
-            Msg::NavigateTo(child) => {
-                let path_segments = match child {
-                    Child::Tasks => vec!["tasks".into()],
-                    Child::TaskNew => vec!["tasks".into(), "new".into()],
-                    Child::PathNotFound(_) => vec!["path_not_fount".into()],
+            Msg::NavigateTo(route) => {
+                let path_segments = match route {
+                    Routes::Tasks => vec!["tasks".into()],
+                    Routes::TaskNew => vec!["tasks".into(), "new".into()],
+                    Routes::PathNotFound(_) => vec!["path_not_fount".into()],
                 };
                 let route = Route {
                     path_segments,
@@ -69,22 +65,22 @@ impl Component for Model {
             }
             Msg::HandleRoute(route) => {
                 info!("Routing: {}", route.to_route_string());
-                self.child = if let Some(first_segment) = route.path_segments.get(0) {
+                self.route = if let Some(first_segment) = route.path_segments.get(0) {
                     match first_segment.as_str() {
                         "tasks" => {
                             if let Some(second_segment) = route.path_segments.get(1) {
                                 match second_segment.as_str() {
-                                    "new" => Child::TaskNew,
-                                    other => Child::PathNotFound(other.into()),
+                                    "new" => Routes::TaskNew,
+                                    other => Routes::PathNotFound(other.into()),
                                 }
                             } else {
-                                Child::Tasks
+                                Routes::Tasks
                             }
                         }
-                        other => Child::PathNotFound(other.into()),
+                        other => Routes::PathNotFound(other.into()),
                     }
                 } else {
-                    Child::PathNotFound("path_not_fount".into())
+                    Routes::PathNotFound("path_not_fount".into())
                 };
                 true
             }
@@ -101,27 +97,25 @@ impl Renderable<Model> for Model {
     fn view(&self) -> Html<Self> {
         html! {
             <div class="body", >
-              {self.child.view()}
+              {self.route.view()}
             </div>
         }
     }
 }
 
-impl Renderable<Model> for Child {
+impl Renderable<Model> for Routes {
     fn view(&self) -> Html<Model> {
         match *self {
-            Child::Tasks => html! {
+            Routes::Tasks => html! {
                 <component::tasks::Model: />
             },
-            Child::TaskNew => html! {
-                <>
-                  {"route tasks/new"}
-                </>
+            Routes::TaskNew => html! {
+                <component::task_new::Model: />
             },
-            Child::PathNotFound(ref path) => html! {
+            Routes::PathNotFound(ref path) => html! {
                 <>
                   <h1>{format!("Invalid path: '{}'", path)}</h1>
-                  <button onclick=|_| Msg::NavigateTo(Child::Tasks),>{ "Go to /tasks" }</button>
+                  <button onclick=|_| Msg::NavigateTo(Routes::Tasks),>{ "Go to /tasks" }</button>
                   <hr />
                   <button onclick=|_| Msg::Click,>{ "くりっく！" }</button>
                   <hr />
