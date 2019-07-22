@@ -4,17 +4,15 @@ extern crate log;
 extern crate serde;
 extern crate yew;
 
-use log::info;
 use yew::agent::Bridged;
 use yew::{html, Bridge, Component, ComponentLink, Html, Renderable, ShouldRender};
-
 pub mod assets;
-use assets::asset;
-
 pub mod component;
 pub mod firebase;
 pub mod routing;
+pub mod model;
 
+use assets::asset;
 use routing::path::Path;
 use routing::route::Route;
 

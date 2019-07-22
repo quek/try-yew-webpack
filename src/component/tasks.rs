@@ -1,14 +1,13 @@
 use firebase::auth::current_user;
 use firebase::firestore::Firestore;
 use firebase::firestore::QuerySnapshot;
-use serde::Deserialize;
-use serde::Serialize;
 use stdweb::unstable::TryInto;
 use yew::agent::Bridged;
 use yew::{html, Bridge, Component, ComponentLink, Html, Renderable, ShouldRender};
 use routing::router::{Request, Router};
 use routing::route::Route;
 use routing::path::Path;
+use model::task::Task;
 
 pub struct Model {
     tasks: Vec<Task>,
@@ -20,14 +19,6 @@ pub enum Msg {
     AddTask,
     HandleRoute(Path),
 }
-
-#[derive(Serialize, Deserialize, Debug)]
-struct Task {
-    name: String,
-}
-
-js_serializable!(Task);
-js_deserializable!(Task);
 
 impl Component for Model {
     type Message = Msg;
