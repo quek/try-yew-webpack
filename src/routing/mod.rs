@@ -1,4 +1,4 @@
-pub mod route;
+pub mod path;
 pub mod route_service;
 pub mod router;
-pub mod routes;
+pub mod route;

@@ -15,18 +15,18 @@ pub mod component;
 pub mod firebase;
 pub mod routing;
 
+use routing::path::Path;
 use routing::route::Route;
-use routing::routes::Routes;
 
 pub struct Model {
-    route: Routes,
+    route: Route,
     router: Box<Bridge<routing::router::Router<()>>>,
 }
 
 pub enum Msg {
     Click,
-    NavigateTo(Routes),
-    HandleRoute(Route<()>),
+    NavigateTo(Route),
+    HandleRoute(Path<()>),
 }
 
 impl Component for Model {
@@ -34,11 +34,11 @@ impl Component for Model {
     type Properties = ();
 
     fn create(_: Self::Properties, mut link: ComponentLink<Self>) -> Self {
-        let callback = link.send_back(|route: Route<()>| Msg::HandleRoute(route));
+        let callback = link.send_back(|path: Path<()>| Msg::HandleRoute(path));
         let mut router = routing::router::Router::bridge(callback);
         router.send(routing::router::Request::GetCurrentRoute);
         Model {
-            route: Routes::Tasks,
+            route: Route::Tasks,
             router,
         }
     }
@@ -47,11 +47,11 @@ impl Component for Model {
         match msg {
             Msg::NavigateTo(route) => {
                 let path_segments = match route {
-                    Routes::Tasks => vec!["tasks".into()],
-                    Routes::TaskNew => vec!["tasks".into(), "new".into()],
-                    Routes::PathNotFound(_) => vec!["path_not_fount".into()],
+                    Route::Tasks => vec!["tasks".into()],
+                    Route::TaskNew => vec!["tasks".into(), "new".into()],
+                    Route::PathNotFound(_) => vec!["path_not_fount".into()],
                 };
-                let route = Route {
+                let route = Path {
                     path_segments,
                     query: None,
                     fragment: None,
@@ -60,24 +60,24 @@ impl Component for Model {
                 self.router.send(routing::router::Request::ChangeRoute(route));
                 false
             }
-            Msg::HandleRoute(route) => {
-                info!("Routing: {}", route.to_route_string());
-                self.route = if let Some(first_segment) = route.path_segments.get(0) {
+            Msg::HandleRoute(path) => {
+                info!("Routing: {}", path.to_route_string());
+                self.route = if let Some(first_segment) = path.path_segments.get(0) {
                     match first_segment.as_str() {
                         "tasks" => {
-                            if let Some(second_segment) = route.path_segments.get(1) {
+                            if let Some(second_segment) = path.path_segments.get(1) {
                                 match second_segment.as_str() {
-                                    "new" => Routes::TaskNew,
-                                    other => Routes::PathNotFound(other.into()),
+                                    "new" => Route::TaskNew,
+                                    other => Route::PathNotFound(other.into()),
                                 }
                             } else {
-                                Routes::Tasks
+                                Route::Tasks
                             }
                         }
-                        other => Routes::PathNotFound(other.into()),
+                        other => Route::PathNotFound(other.into()),
                     }
                 } else {
-                    Routes::PathNotFound("path_not_fount".into())
+                    Route::PathNotFound("path_not_fount".into())
                 };
                 true
             }
@@ -100,19 +100,19 @@ impl Renderable<Model> for Model {
     }
 }
 
-impl Renderable<Model> for Routes {
+impl Renderable<Model> for Route {
     fn view(&self) -> Html<Model> {
         match *self {
-            Routes::Tasks => html! {
+            Route::Tasks => html! {
                 <component::tasks::Model: />
             },
-            Routes::TaskNew => html! {
+            Route::TaskNew => html! {
                 <component::task_new::Model: />
             },
-            Routes::PathNotFound(ref path) => html! {
+            Route::PathNotFound(ref path) => html! {
                 <>
                   <h1>{format!("Invalid path: '{}'", path)}</h1>
-                  <button onclick=|_| Msg::NavigateTo(Routes::Tasks),>{ "Go to /tasks" }</button>
+                  <button onclick=|_| Msg::NavigateTo(Route::Tasks),>{ "Go to /tasks" }</button>
                   <hr />
                   <button onclick=|_| Msg::Click,>{ "くりっく！" }</button>
                   <hr />
