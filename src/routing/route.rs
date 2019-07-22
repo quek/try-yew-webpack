@@ -9,6 +9,27 @@ pub enum Route {
 }
 
 impl Route {
+    pub fn from_path(path: &Path) -> Self {
+        // FIXME きれいにして
+        if let Some(first_segment) = path.path_segments.get(0) {
+            match first_segment.as_str() {
+                "tasks" => {
+                    if let Some(second_segment) = path.path_segments.get(1) {
+                        match second_segment.as_str() {
+                            "new" => Route::TaskNew,
+                            other => Route::PathNotFound(other.into()),
+                        }
+                    } else {
+                        Route::Tasks
+                    }
+                }
+                other => Route::PathNotFound(other.into()),
+            }
+        } else {
+            Route::PathNotFound("path_not_fount".into())
+        }
+    }
+
     pub fn to_path(&self) -> Path {
         let path_segments = match self {
             Route::Tasks => vec!["tasks".into()],

@@ -50,24 +50,7 @@ impl Component for Model {
                 false
             }
             Msg::HandleRoute(path) => {
-                info!("Routing: {}", path.to_route_string());
-                self.route = if let Some(first_segment) = path.path_segments.get(0) {
-                    match first_segment.as_str() {
-                        "tasks" => {
-                            if let Some(second_segment) = path.path_segments.get(1) {
-                                match second_segment.as_str() {
-                                    "new" => Route::TaskNew,
-                                    other => Route::PathNotFound(other.into()),
-                                }
-                            } else {
-                                Route::Tasks
-                            }
-                        }
-                        other => Route::PathNotFound(other.into()),
-                    }
-                } else {
-                    Route::PathNotFound("path_not_fount".into())
-                };
+                self.route = Route::from_path(&path);
                 true
             }
             Msg::Click => true,
