@@ -13,17 +13,14 @@ use assets::asset;
 
 pub mod component;
 pub mod firebase;
-pub mod route;
-pub mod route_service;
-pub mod router;
-pub mod routes;
+pub mod routing;
 
-use route::Route;
-use routes::Routes;
+use routing::route::Route;
+use routing::routes::Routes;
 
 pub struct Model {
     route: Routes,
-    router: Box<Bridge<router::Router<()>>>,
+    router: Box<Bridge<routing::router::Router<()>>>,
 }
 
 pub enum Msg {
@@ -38,8 +35,8 @@ impl Component for Model {
 
     fn create(_: Self::Properties, mut link: ComponentLink<Self>) -> Self {
         let callback = link.send_back(|route: Route<()>| Msg::HandleRoute(route));
-        let mut router = router::Router::bridge(callback);
-        router.send(router::Request::GetCurrentRoute);
+        let mut router = routing::router::Router::bridge(callback);
+        router.send(routing::router::Request::GetCurrentRoute);
         Model {
             route: Routes::Tasks,
             router,
@@ -60,7 +57,7 @@ impl Component for Model {
                     fragment: None,
                     state: (),
                 };
-                self.router.send(router::Request::ChangeRoute(route));
+                self.router.send(routing::router::Request::ChangeRoute(route));
                 false
             }
             Msg::HandleRoute(route) => {
