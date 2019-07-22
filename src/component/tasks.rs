@@ -4,15 +4,21 @@ use firebase::firestore::QuerySnapshot;
 use serde::Deserialize;
 use serde::Serialize;
 use stdweb::unstable::TryInto;
-use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
+use yew::agent::Bridged;
+use yew::{html, Bridge, Component, ComponentLink, Html, Renderable, ShouldRender};
+use routing::router::{Request, Router};
+use routing::route::Route;
+use routing::path::Path;
 
 pub struct Model {
     tasks: Vec<Task>,
+    router: Box<Bridge<Router>>,
 }
 
 pub enum Msg {
     GetTasks(QuerySnapshot),
     AddTask,
+    HandleRoute(Path),
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -39,7 +45,9 @@ impl Component for Model {
             .collection("tasks")
             .get(callback);
 
-        Self { tasks: vec![] }
+        let callback = link.send_back(|path: Path| Msg::HandleRoute(path));
+        let router = Router::bridge(callback);
+        Self { tasks: vec![], router }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -52,12 +60,14 @@ impl Component for Model {
                     .collect();
                 self.tasks = tasks;
                 console!(log, &self.tasks);
+                true
             }
             Msg::AddTask => {
-                console!(log, "add task");
-            }
+                self.router.send(Request::ChangeRoute(Route::TaskNew));
+                false
+            },
+            Msg::HandleRoute(_) => false
         }
-        true
     }
 
     fn change(&mut self, _: Self::Properties) -> ShouldRender {
