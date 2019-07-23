@@ -1,10 +1,9 @@
 use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
 
-pub struct Model {
-}
+pub struct Model {}
 
 pub enum Msg {
-    Submit
+    Submit,
 }
 
 impl Component for Model {
@@ -12,7 +11,7 @@ impl Component for Model {
     type Properties = ();
 
     fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
-        Self { }
+        Self {}
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -32,8 +31,9 @@ impl Component for Model {
 impl Renderable<Model> for Model {
     fn view(&self) -> Html<Self> {
         html! {
-            <div class="tasks", >
-                  {"新しいの"}
+            <div class="TaskNew", >
+                <input type="text", placeholder="内容", />
+                <button>{"OK"}</button>
             </div>
         }
     }
