@@ -1,12 +1,15 @@
 use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
-use stdweb::web::FormData;
+use stdweb::web::{FormData, FormDataEntry};
 use stdweb::traits::IEvent;
 use stdweb::unstable::TryInto;
 
-pub struct Model {}
+pub struct Model {
+    name: String
+}
 
 pub enum Msg {
     Submit(stdweb::web::event::SubmitEvent),
+    HandleChange(String)
 }
 
 impl Component for Model {
@@ -14,16 +17,26 @@ impl Component for Model {
     type Properties = ();
 
     fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
-        Self {}
+        Self {
+            name: "".to_string()
+        }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::Submit(event) => {
+                console!(log, "Submit");
                 event.prevent_default();
-                let form: stdweb::web::Element = event.target().unwrap().try_into().unwrap();
+                let form: stdweb::web::Element = 
+                    event.target().unwrap().try_into().unwrap();
                 let form_data = FormData::from_element(&form).unwrap();
-                form_data.get("name");
+                if let Some(FormDataEntry::String(s)) = form_data.get("name") {
+                    console!(log, s);
+                }
+            }
+            Msg::HandleChange(value) => {
+                self.name = value;
+                console!(log, &self.name);
             }
         }
         true
@@ -39,7 +52,11 @@ impl Renderable<Model> for Model {
         html! {
             <div class="TaskNew", >
                 <form onsubmit=|event| Msg::Submit(event), >
-                    <input name="name", type="text", placeholder="内容", />
+                    <input name="name"
+                        , type="text"
+                        , placeholder="内容"
+                        , oninput=|event| Msg::HandleChange(event.value)
+                    ,/>
                     <button>{"OK"}</button>
                 </form>
             </div>
