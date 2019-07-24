@@ -1,12 +1,16 @@
 use stdweb::unstable::TryInto;
 use stdweb::Value;
 use yew::Callback;
+use serde::{Deserialize, Serialize};
 
 pub struct Firestore(Value);
 pub struct Collection(Value);
 pub struct Document(Value);
 pub struct QuerySnapshot(Value);
 pub struct QueryDocumentSnapshot(Value);
+#[derive(Serialize, Deserialize, Debug)]
+pub struct DocumentReference(Value);
+
 
 impl Firestore {
     pub fn new() -> Self {

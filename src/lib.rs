@@ -3,6 +3,7 @@ extern crate stdweb;
 extern crate log;
 extern crate serde;
 extern crate yew;
+extern crate chrono;
 
 use yew::agent::Bridged;
 use yew::{html, Bridge, Component, ComponentLink, Html, Renderable, ShouldRender};
