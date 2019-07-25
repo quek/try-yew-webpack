@@ -5,7 +5,7 @@ use firebase::firestore::DocumentReference;
 pub struct Task {
     pub r#ref: Option<DocumentReference>,
     pub name: String,
-    pub created_at: stdweb::web::Date,
+    pub created_at: chrono::DateTime<chrono::Local>,
     pub updated_at: chrono::DateTime<chrono::Local>
 }
 
