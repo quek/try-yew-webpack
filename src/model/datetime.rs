@@ -12,6 +12,29 @@ use stdweb::Value;
 #[derive(Debug)]
 pub struct DateTime(chrono::DateTime<chrono::Utc>);
 
+impl DateTime {
+    pub fn new(x: chrono::DateTime<chrono::Utc>) -> Self {
+        Self(x)
+    }
+
+    pub fn now() -> Self {
+        let date = Date::new();
+        let utc = Utc
+            .ymd(
+                date.get_full_year(),
+                date.get_month() as u32,
+                date.get_day() as u32,
+            )
+            .and_hms_milli(
+                date.get_hours() as u32,
+                date.get_minutes() as u32,
+                date.get_seconds() as u32,
+                date.get_milliseconds() as u32,
+            );
+        Self(utc)
+    }
+}
+
 impl Deref for DateTime {
     type Target = chrono::DateTime<chrono::Utc>;
     fn deref(&self) -> &chrono::DateTime<chrono::Utc> {
