@@ -1,5 +1,7 @@
 #[macro_use]
 extern crate stdweb;
+#[macro_use]
+extern crate stdweb_derive;
 extern crate log;
 extern crate serde;
 extern crate yew;
