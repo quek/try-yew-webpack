@@ -1,4 +1,6 @@
+use chrono::Datelike;
 use chrono::TimeZone;
+use chrono::Timelike;
 use chrono::Utc;
 use serde::de::{Deserialize, Deserializer};
 use serde::ser::{Serialize, Serializer};
@@ -28,7 +30,16 @@ impl Serialize for DateTime {
     where
         S: Serializer,
     {
-        Value::Reference(Date::new().try_into().unwrap()).serialize(serializer)
+        let date = Date::from_datetime(
+            self.0.year(),
+            self.0.month() as i32,
+            self.0.day() as i32,
+            self.0.hour() as i32,
+            self.0.minute() as i32,
+            self.0.second() as i32,
+            (self.0.nanosecond() / 1000) as i32,
+        );
+        Value::Reference(date.try_into().unwrap()).serialize(serializer)
     }
 }
 
