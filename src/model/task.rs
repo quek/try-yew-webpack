@@ -1,6 +1,8 @@
 use firebase::firestore::DocumentReference;
 // use firebase::timestamp::Timestamp;
 use super::datetime::DateTime;
+use firebase::auth::current_user;
+use firebase::firestore::Firestore;
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 pub struct Task {
@@ -12,3 +14,15 @@ pub struct Task {
 
 js_serializable!(Task);
 js_deserializable!(Task);
+
+impl Task {
+    pub fn create(&self) {
+        let user = current_user();
+        let firestore = Firestore::new();
+        firestore
+            .collection("users")
+            .doc(&user.uid())
+            .collection("tasks")
+            .add(self);
+    }
+}

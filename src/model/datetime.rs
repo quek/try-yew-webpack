@@ -1,7 +1,7 @@
-use chrono::Datelike;
 use chrono::TimeZone;
 use chrono::Timelike;
 use chrono::Utc;
+// use firebase::timestamp::Timestamp;
 use serde::de::{Deserialize, Deserializer};
 use serde::ser::{Serialize, Serializer};
 use std::ops::{Deref, DerefMut};
@@ -53,17 +53,29 @@ impl Serialize for DateTime {
     where
         S: Serializer,
     {
-        let date = Date::from_datetime(
-            self.0.year(),
-            self.0.month() as i32,
-            self.0.day() as i32,
-            self.0.hour() as i32,
-            self.0.minute() as i32,
-            self.0.second() as i32,
-            (self.0.nanosecond() / 1000) as i32,
-        );
-        console!(log, format!("{:?}", &date));
-        Value::Reference(date.try_into().unwrap()).serialize(serializer)
+        let seconds = self.0.timestamp() as u32;
+        let nanosecond = self.0.nanosecond();
+        let v = js! {
+            return new firebase.firestore.Timestamp(@{seconds}, @{nanosecond});
+        };
+        console!(log, format!("v: {:?}", &v));
+        v.serialize(serializer)
+        // let timestamp: Timestamp = v.try_into().unwrap();
+        // console!(log, format!("Timestamp: {:?}", &timestamp));
+        // let value = Value::Reference(timestamp.try_into().unwrap());
+        // value.serialize(serializer)
+
+        // let date = Date::from_datetime(
+        //     self.0.year(),
+        //     self.0.month() as i32,
+        //     self.0.day() as i32,
+        //     self.0.hour() as i32,
+        //     self.0.minute() as i32,
+        //     self.0.second() as i32,
+        //     (self.0.nanosecond() / 1000) as i32,
+        // );
+        // console!(log, format!("{:?}", &date));
+        // Value::Reference(date.try_into().unwrap()).serialize(serializer)
     }
 }
 
@@ -73,7 +85,7 @@ impl<'de> Deserialize<'de> for DateTime {
         D: Deserializer<'de>,
     {
         let v = Value::deserialize(deserializer).unwrap();
-        console!(log, &v);
+        console!(log, format!("deserializer {:?}", &v));
         let seconds = (js! {
             return @{&v}.seconds;
         })
