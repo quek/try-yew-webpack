@@ -55,7 +55,12 @@ impl Collection {
 
     pub fn add(&self, x: &Task) {
         js! {
-            return @{&self.0}.add(@{x});
+            const data = {
+                ...@{&x.data},
+                created_at: @{&x.created_at},
+                updated_at: @{&x.updated_at},
+            };
+            return @{&self.0}.add(data);
         };
     }
 }
@@ -102,7 +107,17 @@ impl QueryDocumentSnapshot {
         Self(value)
     }
 
+    pub fn get(&self, field_path: &str) -> Value {
+        js!( return ${&self.0}.get(@{field_path}); )
+    }
+
     pub fn data(&self) -> Value {
         js!( return @{&self.0}.data() )
+    }
+
+    pub fn r#ref(&self) -> DocumentReference {
+        DocumentReference(js!(
+            return @{&self.0}.ref;
+        ))
     }
 }

@@ -1,19 +1,23 @@
-use firebase::firestore::DocumentReference;
-// use firebase::timestamp::Timestamp;
-use super::datetime::DateTime;
 use firebase::auth::current_user;
+use firebase::firestore::DocumentReference;
 use firebase::firestore::Firestore;
+use firebase::timestamp::Timestamp;
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
-pub struct Task {
-    pub r#ref: Option<DocumentReference>,
+pub struct TaskData {
     pub name: String,
-    pub created_at: DateTime,
-    pub updated_at: DateTime,
 }
 
-js_serializable!(Task);
-js_deserializable!(Task);
+js_serializable!(TaskData);
+js_deserializable!(TaskData);
+
+#[derive(Debug)]
+pub struct Task {
+    pub r#ref: Option<DocumentReference>,
+    pub data: TaskData,
+    pub created_at: Timestamp,
+    pub updated_at: Timestamp,
+}
 
 impl Task {
     pub fn create(&self) {

@@ -32,4 +32,12 @@ pub trait ITimestamp: ReferenceType {
     }
 }
 
-impl ITimestamp for Timestamp {}
+impl Timestamp {
+    pub fn now() -> Self {
+        js!(
+            return new firebase.firestore.Timestamp.now();
+        )
+        .try_into()
+        .unwrap()
+    }
+}

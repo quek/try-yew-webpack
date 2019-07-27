@@ -1,5 +1,5 @@
-use model::datetime::DateTime;
-use model::task::Task;
+use firebase::timestamp::Timestamp;
+use model::task::{Task, TaskData};
 use stdweb::traits::IEvent;
 use stdweb::unstable::TryInto;
 use stdweb::web::{FormData, FormDataEntry};
@@ -34,11 +34,11 @@ impl Component for Model {
                 if let Some(FormDataEntry::String(name)) = form_data.get("name") {
                     let task = Task {
                         r#ref: None,
-                        name,
-                        created_at: DateTime::now(),
-                        updated_at: DateTime::now(),
+                        data: TaskData { name },
+                        created_at: Timestamp::now(),
+                        updated_at: Timestamp::now(),
                     };
-                    console!(log, &task);
+                    console!(log, format!("{:?}", &task));
                     task.create();
                 }
                 true

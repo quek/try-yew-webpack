@@ -53,7 +53,7 @@ impl Serialize for DateTime {
     where
         S: Serializer,
     {
-        let seconds = self.0.timestamp() as u32;
+        let seconds = self.0.timestamp() as f64;
         let nanosecond = self.0.nanosecond();
         let v = js! {
             return new firebase.firestore.Timestamp(@{seconds}, @{nanosecond});
@@ -65,10 +65,10 @@ impl Serialize for DateTime {
             console.log(@{&timestamp});
         };
         console!(log, format!("Timestamp: {:?}", &timestamp));
-        timestamp.serialize(serializer)
+        // timestamp.serialize(serializer)
 
-        // let value = Value::Reference(timestamp.try_into().unwrap());
-        // value.serialize(serializer)
+        let value = Value::Reference(timestamp.try_into().unwrap());
+        value.serialize(serializer)
 
         // let date = Date::from_datetime(
         //     self.0.year(),

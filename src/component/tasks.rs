@@ -50,10 +50,18 @@ impl Component for Model {
                 let docs = qs.docs();
                 let tasks = docs
                     .iter()
-                    .map(|doc| doc.data().try_into().unwrap())
+                    .map(|doc| {
+                        let data = doc.data().try_into().unwrap();
+                        Task {
+                            r#ref: Some(doc.r#ref()),
+                            data,
+                            created_at: doc.get("created_at").try_into().unwrap(),
+                            updated_at: doc.get("updated_at").try_into().unwrap(),
+                        }
+                    })
                     .collect();
                 self.tasks = tasks;
-                console!(log, &self.tasks);
+                console!(log, format!("{:?}", &self.tasks));
                 true
             }
             Msg::AddTask => {
@@ -88,7 +96,7 @@ impl Model {
     fn view_task(&self, task: &Task) -> Html<Model> {
         html! {
             <li>
-                {&task.name}
+                {&task.data.name}
                 <div>
                     {format!("{:?}", &task)}
                 </div>
