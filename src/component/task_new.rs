@@ -29,14 +29,9 @@ impl Component for Model {
             Msg::Submit(event) => {
                 console!(log, "Submit");
                 event.prevent_default();
-                console!(log, "Submit");
                 let form: stdweb::web::Element = event.target().unwrap().try_into().unwrap();
-                console!(log, "Submit");
                 let form_data = FormData::from_element(&form).unwrap();
-                console!(log, "Submit aaa");
-                console!(log, "Submit bbb");
                 if let Some(FormDataEntry::String(name)) = form_data.get("name") {
-                    console!(log, &name);
                     let task = Task {
                         r#ref: None,
                         name,
