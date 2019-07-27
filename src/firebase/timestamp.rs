@@ -1,19 +1,19 @@
+use stdweb::unstable::TryInto;
 use stdweb::Reference;
 use stdweb::ReferenceType;
-use stdweb::unstable::TryInto;
 
 // firebase.firestore.Timestamp
 // https://firebase.google.com/docs/reference/js/firebase.firestore.Timestamp
 /*
 pub struct Timestamp {
-    pub seconds: i64, 
+    pub seconds: i64,
     pub nanoseconds: u32
 }
 */
 
 #[derive(Clone, Debug, PartialEq, Eq, ReferenceType)]
-#[reference(instance_of = "Timestamp")]
-pub struct Timestamp( Reference );
+#[reference(instance_of = "firebase.firestore.Timestamp")]
+pub struct Timestamp(Reference);
 
 pub trait ITimestamp: ReferenceType {
     fn seconds(&self) -> i64 {

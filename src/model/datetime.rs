@@ -1,7 +1,7 @@
 use chrono::TimeZone;
 use chrono::Timelike;
 use chrono::Utc;
-// use firebase::timestamp::Timestamp;
+use firebase::timestamp::Timestamp;
 use serde::de::{Deserialize, Deserializer};
 use serde::ser::{Serialize, Serializer};
 use std::ops::{Deref, DerefMut};
@@ -59,9 +59,14 @@ impl Serialize for DateTime {
             return new firebase.firestore.Timestamp(@{seconds}, @{nanosecond});
         };
         console!(log, format!("v: {:?}", &v));
-        v.serialize(serializer)
-        // let timestamp: Timestamp = v.try_into().unwrap();
-        // console!(log, format!("Timestamp: {:?}", &timestamp));
+        // v.serialize(serializer)
+        let timestamp: Timestamp = v.try_into().unwrap();
+        js! {
+            console.log(@{&timestamp});
+        };
+        console!(log, format!("Timestamp: {:?}", &timestamp));
+        timestamp.serialize(serializer)
+
         // let value = Value::Reference(timestamp.try_into().unwrap());
         // value.serialize(serializer)
 
@@ -85,21 +90,17 @@ impl<'de> Deserialize<'de> for DateTime {
         D: Deserializer<'de>,
     {
         let v = Value::deserialize(deserializer).unwrap();
-        console!(log, format!("deserializer {:?}", &v));
         let seconds = (js! {
             return @{&v}.seconds;
         })
         .try_into()
         .unwrap();
-        console!(log, format!("{:?}", &seconds));
         let nanoseconds = (js! {
             return @{&v}.nanoseconds;
         })
         .try_into()
         .unwrap();
-        console!(log, format!("{:?}", &nanoseconds));
         let utc = Utc.timestamp(seconds, nanoseconds);
-        console!(log, format!("{:?}", &utc));
         Ok(DateTime(utc))
     }
 }
