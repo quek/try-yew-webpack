@@ -62,6 +62,7 @@ impl Serialize for DateTime {
             self.0.second() as i32,
             (self.0.nanosecond() / 1000) as i32,
         );
+        console!(log, format!("{:?}", &date));
         Value::Reference(date.try_into().unwrap()).serialize(serializer)
     }
 }

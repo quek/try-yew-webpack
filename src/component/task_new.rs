@@ -39,14 +39,16 @@ impl Component for Model {
                         updated_at: DateTime::now(),
                     };
                     console!(log, &task);
+                    task.create();
                 }
+                true
             }
             Msg::HandleChange(value) => {
                 self.name = value;
                 console!(log, &self.name);
+                false
             }
         }
-        true
     }
 
     fn change(&mut self, _: Self::Properties) -> ShouldRender {
