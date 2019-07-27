@@ -1,20 +1,24 @@
 use chrono::TimeZone;
-use serde::ser::{Serialize, Serializer};
+use chrono::Utc;
 use serde::de::{Deserialize, Deserializer};
+use serde::ser::{Serialize, Serializer};
 use std::ops::{Deref, DerefMut};
+use stdweb::unstable::TryInto;
+use stdweb::web::Date;
+use stdweb::Value;
 
 #[derive(Debug)]
-pub struct DateTime(chrono::DateTime<chrono::Local>);
+pub struct DateTime(chrono::DateTime<chrono::Utc>);
 
 impl Deref for DateTime {
-    type Target = chrono::DateTime<chrono::Local>;
-    fn deref(&self) -> &chrono::DateTime<chrono::Local> {
+    type Target = chrono::DateTime<chrono::Utc>;
+    fn deref(&self) -> &chrono::DateTime<chrono::Utc> {
         &self.0
     }
 }
 
 impl DerefMut for DateTime {
-    fn deref_mut(&mut self) -> &mut chrono::DateTime<chrono::Local> {
+    fn deref_mut(&mut self) -> &mut chrono::DateTime<chrono::Utc> {
         &mut self.0
     }
 }
@@ -24,7 +28,7 @@ impl Serialize for DateTime {
     where
         S: Serializer,
     {
-        0.serialize(serializer)
+        Value::Reference(Date::new().try_into().unwrap()).serialize(serializer)
     }
 }
 
@@ -33,7 +37,22 @@ impl<'de> Deserialize<'de> for DateTime {
     where
         D: Deserializer<'de>,
     {
-        let _ = i32::deserialize(deserializer);
-        Ok(DateTime(chrono::Local.timestamp(0, 0)))
+        let v = Value::deserialize(deserializer).unwrap();
+        console!(log, &v);
+        let seconds = (js! {
+            return @{&v}.seconds;
+        })
+        .try_into()
+        .unwrap();
+        console!(log, format!("{:?}", &seconds));
+        let nanoseconds = (js! {
+            return @{&v}.nanoseconds;
+        })
+        .try_into()
+        .unwrap();
+        console!(log, format!("{:?}", &nanoseconds));
+        let utc = Utc.timestamp(seconds, nanoseconds);
+        console!(log, format!("{:?}", &utc));
+        Ok(DateTime(utc))
     }
 }

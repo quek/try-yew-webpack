@@ -1,13 +1,13 @@
 use firebase::auth::current_user;
 use firebase::firestore::Firestore;
 use firebase::firestore::QuerySnapshot;
+use model::task::Task;
+use routing::path::Path;
+use routing::route::Route;
+use routing::router::{Request, Router};
 use stdweb::unstable::TryInto;
 use yew::agent::Bridged;
 use yew::{html, Bridge, Component, ComponentLink, Html, Renderable, ShouldRender};
-use routing::router::{Request, Router};
-use routing::route::Route;
-use routing::path::Path;
-use model::task::Task;
 
 pub struct Model {
     tasks: Vec<Task>,
@@ -38,7 +38,10 @@ impl Component for Model {
 
         let callback = link.send_back(|path: Path| Msg::HandleRoute(path));
         let router = Router::bridge(callback);
-        Self { tasks: vec![], router }
+        Self {
+            tasks: vec![],
+            router,
+        }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -56,8 +59,8 @@ impl Component for Model {
             Msg::AddTask => {
                 self.router.send(Request::ChangeRoute(Route::TaskNew));
                 false
-            },
-            Msg::HandleRoute(_) => false
+            }
+            Msg::HandleRoute(_) => false,
         }
     }
 
@@ -86,6 +89,9 @@ impl Model {
         html! {
             <li>
                 {&task.name}
+                <div>
+                    {format!("{:?}", &task)}
+                </div>
             </li>
         }
     }
