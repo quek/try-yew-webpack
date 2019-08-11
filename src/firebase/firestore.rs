@@ -108,7 +108,7 @@ impl QueryDocumentSnapshot {
     }
 
     pub fn get(&self, field_path: &str) -> Value {
-        js!( return ${&self.0}.get(@{field_path}); )
+        js!( return @{&self.0}.get(@{field_path}); )
     }
 
     pub fn data(&self) -> Value {

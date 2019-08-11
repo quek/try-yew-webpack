@@ -80,11 +80,11 @@ impl Component for Model {
 impl Renderable<Model> for Model {
     fn view(&self) -> Html<Self> {
         html! {
-            <div class="tasks", >
+            <div class="tasks">
                 <ul>
                     { for self.tasks.iter().map(|task| self.view_task(task)) }
                 </ul>
-                <button class="add-button", onclick=|_| Msg::AddTask, >
+                <button class="add-button", onclick=|_| Msg::AddTask>
                   {"+"}
                 </button>
             </div>

@@ -59,13 +59,14 @@ impl Component for Model {
 impl Renderable<Model> for Model {
     fn view(&self) -> Html<Self> {
         html! {
-            <div class="TaskNew", >
-                <form onsubmit=|event| Msg::Submit(event), >
-                    <input name="name"
-                        , type="text"
-                        , placeholder="内容"
-                        , oninput=|event| Msg::HandleChange(event.value)
-                    ,/>
+            <div class="TaskNew">
+                <form onsubmit=|event| Msg::Submit(event)>
+                    <input
+                        name="name"
+                        type="text"
+                        placeholder="内容"
+                        oninput=|event| Msg::HandleChange(event.value)
+                    />
                     <button>{"OK"}</button>
                 </form>
             </div>
