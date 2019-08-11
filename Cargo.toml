@@ -5,7 +5,7 @@ version = "0.1.0"
 [dependencies]
 log = "0.4"
 web_logger = "0.1"
-stdweb = "^0.4.14"
+stdweb = "^0.4.16"
 stdweb-derive = "^0.5.1"
 yew = "^0.8.0"
 serde = { version = "1.0", features = ["derive"] }
