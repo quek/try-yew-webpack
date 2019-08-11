@@ -55,8 +55,8 @@ impl Component for Model {
                         Task {
                             r#ref: Some(doc.r#ref()),
                             data,
-                            created_at: doc.get("created_at").try_into().unwrap(),
-                            updated_at: doc.get("updated_at").try_into().unwrap(),
+                            createdAt: doc.get("createdAt").try_into().unwrap(),
+                            updatedAt: doc.get("updatedAt").try_into().unwrap(),
                         }
                     })
                     .collect();

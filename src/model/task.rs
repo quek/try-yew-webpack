@@ -15,8 +15,8 @@ js_deserializable!(TaskData);
 pub struct Task {
     pub r#ref: Option<DocumentReference>,
     pub data: TaskData,
-    pub created_at: Timestamp,
-    pub updated_at: Timestamp,
+    pub createdAt: Timestamp,
+    pub updatedAt: Timestamp,
 }
 
 impl Task {

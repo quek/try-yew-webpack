@@ -35,8 +35,8 @@ impl Component for Model {
                     let task = Task {
                         r#ref: None,
                         data: TaskData { name },
-                        created_at: Timestamp::now(),
-                        updated_at: Timestamp::now(),
+                        createdAt: Timestamp::now(),
+                        updatedAt: Timestamp::now(),
                     };
                     console!(log, format!("{:?}", &task));
                     task.create();
