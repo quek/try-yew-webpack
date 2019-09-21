@@ -57,8 +57,6 @@ impl Collection {
         js! {
             const data = {
                 ...@{&x.data},
-                createdAt: @{&x.createdAt},
-                updatedAt: @{&x.updatedAt},
             };
             return @{&self.0}.add(data);
         };

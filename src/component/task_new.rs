@@ -1,4 +1,3 @@
-use firebase::timestamp::Timestamp;
 use model::task::{Task, TaskData};
 use stdweb::traits::IEvent;
 use stdweb::unstable::TryInto;
@@ -35,8 +34,6 @@ impl Component for Model {
                     let task = Task {
                         r#ref: None,
                         data: TaskData { name },
-                        createdAt: Timestamp::now(),
-                        updatedAt: Timestamp::now(),
                     };
                     console!(log, format!("{:?}", &task));
                     task.create();

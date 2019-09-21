@@ -55,8 +55,6 @@ impl Component for Model {
                         Task {
                             r#ref: Some(doc.r#ref()),
                             data,
-                            createdAt: doc.get("createdAt").try_into().unwrap(),
-                            updatedAt: doc.get("updatedAt").try_into().unwrap(),
                         }
                     })
                     .collect();
@@ -97,9 +95,6 @@ impl Model {
         html! {
             <li>
                 {&task.data.name}
-                <div>
-                    {format!("{:?}", &task)}
-                </div>
             </li>
         }
     }
