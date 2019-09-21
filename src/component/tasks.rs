@@ -1,3 +1,4 @@
+use firebase::firestore::DocumentReference;
 use firebase::auth::current_user;
 use firebase::firestore::Firestore;
 use firebase::firestore::QuerySnapshot;
@@ -17,6 +18,7 @@ pub struct Model {
 pub enum Msg {
     GetTasks(QuerySnapshot),
     AddTask,
+    DeleteTask(DocumentReference),
     HandleRoute(Path),
 }
 
@@ -66,6 +68,11 @@ impl Component for Model {
                 self.router.send(Request::ChangeRoute(Route::TaskNew));
                 false
             }
+            Msg::DeleteTask(referenece) => {
+                console!(log, "delete");
+                referenece.delete();
+                true
+            }
             Msg::HandleRoute(_) => false,
         }
     }
@@ -92,8 +99,9 @@ impl Renderable<Model> for Model {
 
 impl Model {
     fn view_task(&self, task: &Task) -> Html<Model> {
+        let r = task.r#ref.clone().unwrap();
         html! {
-            <li>
+            <li onclick=|_| Msg::DeleteTask(r.clone())>
                 {&task.data.name}
             </li>
         }
