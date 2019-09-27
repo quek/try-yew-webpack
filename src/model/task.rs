@@ -1,7 +1,7 @@
 use firebase::auth::current_user;
 use firebase::firestore::DocumentReference;
 use firebase::firestore::Firestore;
-use firebase::timestamp::Timestamp;
+use serde::Serialize;
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 pub struct TaskData {
@@ -11,12 +11,12 @@ pub struct TaskData {
 js_serializable!(TaskData);
 js_deserializable!(TaskData);
 
-#[derive(Debug)]
+#[derive(Serialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct Task {
+    #[serde(skip)]
     pub r#ref: Option<DocumentReference>,
     pub data: TaskData,
-    pub created_at: Timestamp,
-    pub updated_at: Timestamp,
 }
 
 impl Task {

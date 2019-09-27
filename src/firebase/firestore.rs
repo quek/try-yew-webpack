@@ -9,7 +9,7 @@ pub struct Collection(Value);
 pub struct Document(Value);
 pub struct QuerySnapshot(Value);
 pub struct QueryDocumentSnapshot(Value);
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct DocumentReference(Value);
 
 impl Firestore {
@@ -57,8 +57,6 @@ impl Collection {
         js! {
             const data = {
                 ...@{&x.data},
-                created_at: @{&x.created_at},
-                updated_at: @{&x.updated_at},
             };
             return @{&self.0}.add(data);
         };
@@ -119,5 +117,13 @@ impl QueryDocumentSnapshot {
         DocumentReference(js!(
             return @{&self.0}.ref;
         ))
+    }
+}
+
+impl DocumentReference {
+    pub fn delete(&self) {
+        js! {
+            @{&self.0}.delete();
+        };
     }
 }

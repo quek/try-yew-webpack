@@ -1,3 +1,4 @@
+#![recursion_limit = "128"]
 #[macro_use]
 extern crate stdweb;
 #[macro_use]
@@ -66,7 +67,7 @@ impl Component for Model {
 impl Renderable<Model> for Model {
     fn view(&self) -> Html<Self> {
         html! {
-            <div class="body", >
+            <div class="body">
               {self.route.view()}
             </div>
         }

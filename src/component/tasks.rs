@@ -1,3 +1,4 @@
+use firebase::firestore::DocumentReference;
 use firebase::auth::current_user;
 use firebase::firestore::Firestore;
 use firebase::firestore::QuerySnapshot;
@@ -17,6 +18,7 @@ pub struct Model {
 pub enum Msg {
     GetTasks(QuerySnapshot),
     AddTask,
+    DeleteTask(DocumentReference),
     HandleRoute(Path),
 }
 
@@ -55,8 +57,6 @@ impl Component for Model {
                         Task {
                             r#ref: Some(doc.r#ref()),
                             data,
-                            created_at: doc.get("created_at").try_into().unwrap(),
-                            updated_at: doc.get("updated_at").try_into().unwrap(),
                         }
                     })
                     .collect();
@@ -67,6 +67,11 @@ impl Component for Model {
             Msg::AddTask => {
                 self.router.send(Request::ChangeRoute(Route::TaskNew));
                 false
+            }
+            Msg::DeleteTask(referenece) => {
+                console!(log, "delete");
+                referenece.delete();
+                true
             }
             Msg::HandleRoute(_) => false,
         }
@@ -80,11 +85,11 @@ impl Component for Model {
 impl Renderable<Model> for Model {
     fn view(&self) -> Html<Self> {
         html! {
-            <div class="tasks", >
+            <div class="tasks">
                 <ul>
                     { for self.tasks.iter().map(|task| self.view_task(task)) }
                 </ul>
-                <button class="add-button", onclick=|_| Msg::AddTask, >
+                <button class="add-button", onclick=|_| Msg::AddTask>
                   {"+"}
                 </button>
             </div>
@@ -94,12 +99,10 @@ impl Renderable<Model> for Model {
 
 impl Model {
     fn view_task(&self, task: &Task) -> Html<Model> {
+        let r = task.r#ref.clone().unwrap();
         html! {
-            <li>
+            <li onclick=|_| Msg::DeleteTask(r.clone())>
                 {&task.data.name}
-                <div>
-                    {format!("{:?}", &task)}
-                </div>
             </li>
         }
     }

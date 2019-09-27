@@ -1,26 +1,34 @@
-use firebase::timestamp::Timestamp;
 use model::task::{Task, TaskData};
 use stdweb::traits::IEvent;
 use stdweb::unstable::TryInto;
 use stdweb::web::{FormData, FormDataEntry};
-use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
+use yew::{html, Bridge, Component, ComponentLink, Html, Renderable, ShouldRender};
+use routing::path::Path;
+use routing::route::Route;
+use routing::router::{Request, Router};
+use yew::agent::Bridged;
 
 pub struct Model {
     name: String,
+    router: Box<Bridge<Router>>,
 }
 
 pub enum Msg {
     Submit(stdweb::web::event::SubmitEvent),
     HandleChange(String),
+    HandleRoute(Path),
 }
 
 impl Component for Model {
     type Message = Msg;
     type Properties = ();
 
-    fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
+    fn create(_: Self::Properties, mut link: ComponentLink<Self>) -> Self {
+        let callback = link.send_back(|path: Path| Msg::HandleRoute(path));
+        let router = Router::bridge(callback);
         Self {
             name: "".to_string(),
+            router
         }
     }
 
@@ -35,12 +43,11 @@ impl Component for Model {
                     let task = Task {
                         r#ref: None,
                         data: TaskData { name },
-                        created_at: Timestamp::now(),
-                        updated_at: Timestamp::now(),
                     };
                     console!(log, format!("{:?}", &task));
                     task.create();
                 }
+                self.router.send(Request::ChangeRoute(Route::Tasks));
                 true
             }
             Msg::HandleChange(value) => {
@@ -48,6 +55,7 @@ impl Component for Model {
                 console!(log, &self.name);
                 false
             }
+            Msg::HandleRoute(_) => false,
         }
     }
 
@@ -59,13 +67,14 @@ impl Component for Model {
 impl Renderable<Model> for Model {
     fn view(&self) -> Html<Self> {
         html! {
-            <div class="TaskNew", >
-                <form onsubmit=|event| Msg::Submit(event), >
-                    <input name="name"
-                        , type="text"
-                        , placeholder="内容"
-                        , oninput=|event| Msg::HandleChange(event.value)
-                    ,/>
+            <div class="TaskNew">
+                <form onsubmit=|event| Msg::Submit(event)>
+                    <input
+                        name="name"
+                        type="text"
+                        placeholder="内容"
+                        oninput=|event| Msg::HandleChange(event.value)
+                    />
                     <button>{"OK"}</button>
                 </form>
             </div>
